@@ -1,0 +1,15 @@
+---
+layout: post
+title: "It was fun."
+date: 2012-10-25 00:00
+comments: true
+categories: 
+---
+
+Many of you will have already known this was coming eventually.  For the past 8 months or so I have been contributing to FuelPHP less and less (in-fact nothing anytime recently).  Today, I am officially stepping away from the project.
+
+Harro ([@WanWizard](http://twitter.com/WanWizard)) is, and has been, the project lead. I have full confidence in his abilities to take the project further than I ever could.  I will be transfering everything (domain name, DNS, hosting accounts, etc) over to him over the next few days, so no worries about any of that.
+
+This decision has nothing to do with the framework itself. I still believe it is, and will be, a great solution for a lot of people.
+
+It was fun while it lasted, I just have to move on.
