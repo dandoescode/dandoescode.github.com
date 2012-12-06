@@ -4,7 +4,7 @@
   <title><![CDATA[dh.blog]]></title>
   <link href="http://dhorrigan.github.com/atom.xml" rel="self"/>
   <link href="http://dhorrigan.github.com/"/>
-  <updated>2012-12-06T13:21:26-05:00</updated>
+  <updated>2012-12-06T13:30:18-05:00</updated>
   <id>http://dhorrigan.github.com/</id>
   <author>
     <name><![CDATA[Dan Horrigan]]></name>
@@ -12,6 +12,219 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Anonymous Functions vs. Closures]]></title>
+    <link href="http://dhorrigan.github.com/blog/2012/08/11/anonymous-functions-vs-closures/"/>
+    <updated>2012-08-11T00:00:00-04:00</updated>
+    <id>http://dhorrigan.github.com/blog/2012/08/11/anonymous-functions-vs-closures</id>
+    <content type="html"><![CDATA[<p>Ever wonder what the difference between an Anonymous Function and a Closure is?  What about a Lambda?  How are they implemented in PHP?  There seems to be a lot of confusion in this area, with people interchanging the words, and not really knowing what they mean, so lets dive in and answer these questions.</p>
+
+<p>First things first: A &#8220;Lambda&#8221; is just another name for an Anonymous Function.  You may have seen it used in some programming language (e.g. Python) and not known what it was&#8230;now you do.</p>
+
+<p>Now that the easy stuff is out of the way, lets take a look at what these two things <em>actually are</em>.  If you are confused at first, don&#8217;t worry, I will hopefully clear it up for you in a bit, these are just brief definitions of the two.</p>
+
+<p><strong>Anonymous Function</strong> - An Anonymous Function is a function that is defined, and occasionally invoked, without being bound to an identifier.  It also has the variable scoping characteristics of a Closure (see below).</p>
+
+<p><strong>Closure</strong> - A Closure is a function that captures the current containing scope, then provides access to that scope when the Closure is invoked.  The Closure binds non-local variable references to the corresponding variables in scope at the time the Closure is created.</p>
+
+<p>From this we can derive: All Anonymous Functions are Closures, but not all Closures are Anonymous Functions.</p>
+
+<h3>Layman&#8217;s Terms</h3>
+
+<p>An Anonymous Function is a Closure without a name.  A Closure is a function which binds references to non-local variables to local variables inside the function at the time of the Closure definition.</p>
+
+<h3>JavaScript Examples</h3>
+
+<p>Here a few examples written in JavaScript (I used JS here since most people have experience in using is):</p>
+
+<p><strong>Anonymous Function as Callback</strong></p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="kd">function</span> <span class="nx">getPosts</span><span class="p">(</span><span class="nx">callback</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="c1">// Code to fetch posts would go here...</span>
+</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="nx">response</span><span class="p">.</span><span class="nx">status</span> <span class="o">==</span> <span class="mi">200</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="nx">callback</span><span class="p">(</span><span class="nx">response</span><span class="p">.</span><span class="nx">body</span><span class="p">);</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="nx">getPosts</span><span class="p">(</span><span class="kd">function</span> <span class="p">(</span><span class="nx">posts</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="c1">// Do something with the posts here</span>
+</span><span class='line'><span class="p">});</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p><strong>Closure as Return Value</strong></p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="kd">function</span> <span class="nx">getProcessor</span><span class="p">(</span><span class="nx">driver</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="c1">// Do some magic to load the processing driver here...</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// Imagine we set the driver variable to the</span>
+</span><span class='line'>    <span class="c1">// processing driver object here...</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">return</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">data</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="c1">// Notice we have access to the driver var. from the</span>
+</span><span class='line'>        <span class="c1">// getProcessor() scope.</span>
+</span><span class='line'>        <span class="k">return</span> <span class="nx">driver</span><span class="p">.</span><span class="nx">process</span><span class="p">(</span><span class="nx">data</span><span class="p">);</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="kd">var</span> <span class="nx">proc</span> <span class="o">=</span> <span class="nx">getProcessor</span><span class="p">(</span><span class="s1">&#39;json&#39;</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">proc</span><span class="p">(</span><span class="nx">someJsonDataHere</span><span class="p">));</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>How about PHP?</h3>
+
+<p>Here is where things get interesting.  In PHP 5.3, Closures and Anonymous Functions were added to the language.  However, they have their quirks (one of which was fixed in PHP 5.4).</p>
+
+<p>Anonymous Functions are implemented as <code>Closure</code> objects.  PHP takes the idea that &#8220;Anonymous Functions are Closures without a name&#8221; to heart, because that is EXACTLY what they are.</p>
+
+<p>Here is a simple Anonymous Function being sent to the array_map function to multiply all integers in an array by 2 (useless, I know, but hey, it is just an example):</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='php'><span class='line'><span class="cp">&lt;?php</span>
+</span><span class='line'><span class="nv">$arr</span> <span class="o">=</span> <span class="nb">array_map</span><span class="p">(</span><span class="k">function</span> <span class="p">(</span><span class="nv">$val</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="k">return</span> <span class="nb">is_int</span><span class="p">(</span><span class="nv">$val</span><span class="p">)</span> <span class="o">?</span> <span class="nv">$val</span> <span class="o">*</span> <span class="mi">2</span> <span class="o">:</span> <span class="nv">$val</span><span class="p">;</span>
+</span><span class='line'><span class="p">},</span> <span class="nv">$arr</span><span class="p">);</span>
+</span><span class='line'><span class="cp">?&gt;</span><span class="x"></span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Simple, right?  Now ask yourself this: What if you want to access non-local variables in that function?  After all Anonymous Functions are Closures too.  Well, you can, but there is a catch:  You have to explicitly tell PHP which variables it should use. That is the first of a few quirks, so let us dive into them.</p>
+
+<h4>Quirk #1</h4>
+
+<p>You MUST send the function all of the variables you want bound to the scope of the Closure using the <code>use</code> keyword.  This is different from most other languages, where this is done automatically (like in my JS example above).</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class='php'><span class='line'><span class="cp">&lt;?php</span>
+</span><span class='line'><span class="nv">$foo</span> <span class="o">=</span> <span class="s1">&#39;foo&#39;</span><span class="p">;</span>
+</span><span class='line'><span class="nv">$bar</span> <span class="o">=</span> <span class="s1">&#39;bar&#39;</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="nv">$baz</span> <span class="o">=</span> <span class="k">function</span> <span class="p">()</span> <span class="k">use</span> <span class="p">(</span><span class="nv">$foo</span><span class="p">,</span> <span class="nv">$bar</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="k">echo</span> <span class="nv">$foo</span><span class="p">,</span> <span class="nv">$bar</span><span class="p">;</span>
+</span><span class='line'><span class="p">};</span>
+</span><span class='line'><span class="cp">?&gt;</span><span class="x"></span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h4>Quirk #2</h4>
+
+<p>The bound variables are <strong>copies</strong>, of the variable, not references.  If you want to be able to change the variable inside the Closure, you MUST send it by reference:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+</pre></td><td class='code'><pre><code class='php'><span class='line'><span class="cp">&lt;?php</span>
+</span><span class='line'><span class="nv">$foo</span> <span class="o">=</span> <span class="s1">&#39;foo&#39;</span><span class="p">;</span>
+</span><span class='line'><span class="nv">$bar</span> <span class="o">=</span> <span class="s1">&#39;bar&#39;</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="nv">$baz</span> <span class="o">=</span> <span class="k">function</span> <span class="p">()</span> <span class="k">use</span> <span class="p">(</span><span class="o">&amp;</span><span class="nv">$foo</span><span class="p">,</span> <span class="o">&amp;</span><span class="nv">$bar</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nv">$foo</span> <span class="o">=</span> <span class="s1">&#39;Hello &#39;</span><span class="p">;</span>
+</span><span class='line'>    <span class="nv">$bar</span> <span class="o">=</span> <span class="s1">&#39;World!&#39;</span><span class="p">;</span>
+</span><span class='line'><span class="p">};</span>
+</span><span class='line'><span class="nv">$baz</span><span class="p">();</span>
+</span><span class='line'><span class="k">echo</span> <span class="nv">$foo</span><span class="p">,</span> <span class="nv">$bar</span><span class="p">;</span> <span class="c1">// Outputs &quot;Hello World!&quot;;</span>
+</span><span class='line'><span class="cp">?&gt;</span><span class="x"></span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h4>Quirk #3</h4>
+
+<p>In PHP 5.3 if you are using a Closure inside of a class, the Closure will not have access to <code>$this</code>.  You must send a reference to <code>$this</code>, however, you cannot send <code>$this</code> directly:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+</pre></td><td class='code'><pre><code class='php'><span class='line'><span class="cp">&lt;?php</span>
+</span><span class='line'><span class="k">class</span> <span class="nc">Test</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="k">protected</span> <span class="nv">$foo</span> <span class="o">=</span> <span class="s1">&#39;foo&#39;</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">public</span> <span class="k">function</span> <span class="nf">baz</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>        <span class="c1">// Get a reference to $this</span>
+</span><span class='line'>        <span class="nv">$self</span> <span class="o">=</span> <span class="o">&amp;</span><span class="nv">$this</span><span class="p">;</span>
+</span><span class='line'>        <span class="nv">$func</span> <span class="o">=</span> <span class="k">function</span> <span class="p">()</span> <span class="k">use</span> <span class="p">(</span><span class="nv">$self</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>            <span class="k">echo</span> <span class="nv">$self</span><span class="o">-&gt;</span><span class="na">foo</span><span class="p">;</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'><span class="cp">?&gt;</span><span class="x"></span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p><em>Note: Because of the way object references are handled in PHP, you do not have to send a reference to <code>$self</code> if you wish to modify it.</em></p>
+
+<h3>PHP 5.4 to the Rescue</h3>
+
+<p>In PHP 5.4, they have added support for the usage of <code>$this</code> in Closures.  They do this by binding the object to the Closure at the time of definition.</p>
+
+<p>You can also change which object your Closure is bound to by using the <code>bind()</code> and <code>bindTo()</code> methods.  You can read more about how to use these methods and exactly what they do in the <a href="http://php.net/manual/en/class.closure.php">PHP documentation</a>.</p>
+
+<h3>So&#8230;</h3>
+
+<p>How should you know when to call it a Closure or Anonymous Function?  Simple:  You can always call it a Closure (because all Anonymous Functions are Closures), and if it doesn&#8217;t have a name, it is Anonymous.  Pretty simple, right?</p>
+
+<p>Hope that helped clear up the confusion.  Feel free to leave questions in the comments, or I am always available on <a href="http://twitter.com/dhorrigan">Twitter</a>.</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Lex Parser 2.0]]></title>
