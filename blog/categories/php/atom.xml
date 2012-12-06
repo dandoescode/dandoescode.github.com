@@ -4,7 +4,7 @@
   <title><![CDATA[Category: PHP | dh.blog]]></title>
   <link href="http://dhorrigan.github.com/blog/categories/php/atom.xml" rel="self"/>
   <link href="http://dhorrigan.github.com/"/>
-  <updated>2012-12-06T13:30:18-05:00</updated>
+  <updated>2012-12-06T13:38:57-05:00</updated>
   <id>http://dhorrigan.github.com/</id>
   <author>
     <name><![CDATA[Dan Horrigan]]></name>
@@ -12,6 +12,94 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Is Eval Really Evil? Yes...and No.]]></title>
+    <link href="http://dhorrigan.github.com/blog/2012/08/28/is-eval-really-evil-yes-dot-dot-dot-and-no/"/>
+    <updated>2012-08-28T00:00:00-04:00</updated>
+    <id>http://dhorrigan.github.com/blog/2012/08/28/is-eval-really-evil-yes-dot-dot-dot-and-no</id>
+    <content type="html"><![CDATA[<p>How many times have you been told "Eval is Evil"?  Probably a lot, and for good reason.  The <code>eval()</code> function in PHP is dangerous in most situations.  Why?  Because executing arbitrary code can lead to very bad things.  Let's look at a real world example that I have seen used in the wild (not going to say which app...for reasons you will see).</p>
+
+<p>The offending code looked something like this (class/variable names have been changed):</p>
+
+<p><code>php
+&lt;?php
+$method = $_GET['method'];
+eval('$return = Foo::'.$method.'();');
+?&gt;
+</code></p>
+
+<p><em>If you look at that code and say "What is wrong with that?", then you may need to re-evaluate your career path, or read on and learn.</em></p>
+
+<p>The above code was used to be able to call various methods (obviously).  However, this is the worst possibly way to do this.  It is very easy to exploit.  All the user needs to do is find a valid method, then they can execute almost any code they want (let's assume this was in index.php):</p>
+
+<p><code>
+index.php?method=bar()%3B%24r%3Dmysql_query(%22select%20*%20from%20users%22)%3Bwhile(%24row%3Dmysql_fetch_assoc(%24r))var_dump(%24row)%3Bdie()%3B%2F%2F
+</code></p>
+
+<p>If you decode that you will see that method is set to:</p>
+
+<p><code>
+bar();$r=mysql_query("select * from users");while($row=mysql_fetch_assoc($r))var_dump($row);die();//
+</code></p>
+
+<p>So when the original code is executed it will run the following:</p>
+
+<p><code>php
+&lt;?php
+eval('$return = Foo::bar();$r=mysql_query("select * from users");while($row=mysql_fetch_assoc($r))var_dump($row);die();//();');
+?&gt;
+</code></p>
+
+<p>So, this will (assuming that <code>mysql_connect()</code> has been called and a DB selected) basically dump the entire <code>users</code> table to that user.  I hope you can see why THAT is bad.</p>
+
+<p>This is probably enough to turn you away from using it at all...which isn't a bad thing.  However, this is where I will get hate, there are times where you have no other option to use <code>eval()</code>, or the other options are equally as bad.</p>
+
+<h3>Wait, I can use eval()?</h3>
+
+<p>Well...sometimes, and only if you are very, VERY, careful.  One of the only valid reasons I can think of to use <code>eval()</code> is Integration Tests.</p>
+
+<p>The main reason that it is OK to use it when writing Integration Tests is because you control everything.  You control the code being executed, and the environment in which it is executed.  The tests deal with no end user data, so you don't need to worry (unless you have some evil devs on your team) about arbitrary code execution.</p>
+
+<p>A great example of this use is reading in tests from external files.  These files can contain various data besides the code to execute to run the tests.  So you read in the file, get the code that needs to be run and run it through <code>eval()</code> (you could also write the code out to a temp file, then <code>include</code> it, but it poses the same security risks, and adds unneeded load to the filesystem).</p>
+
+<h3>Ok, so only in tests?</h3>
+
+<p>Knowing when to use <code>eval()</code> is very simple.  Ask yourself "Will this code run in production with user input?" If your answer is yes, then NO, you should not use <code>eval()</code>...ever (unless you REALLY know what you are doing and are REALLY sure the code being executed is safe).</p>
+
+<h3>Catching Syntax Errors in Eval</h3>
+
+<p>Since errors triggered in code ran inside <code>eval()</code> will not be caught by your error handler (set via <code>set_error_handler()</code>), you need to implement some trickery to catch PHP errors.  This can be handy when you are using <code>eval()</code> to execute some test code.</p>
+
+<p>Here is the full code sample for catching the errors:</p>
+
+<p>```php
+&lt;?php
+// We need to make sure we don't have any previous errors munging our results
+@trigger_error('');
+eval($code);
+$error = error_get_last();</p>
+
+<p>// If the message is empty, then we know it is from our error triggered above
+if ($error['message'] !== '') {</p>
+
+<pre><code>// Do whatever you want with the error...here we throw an ErrorException
+throw new ErrorException($error['message'], $error['type']);
+</code></pre>
+
+<p>}
+?>
+```</p>
+
+<p>Ok, before you start hating on the code above, it is meant only for use during testing, so using the <code>@</code> operator isn't a big deal (c'mon, we are using <code>eval()</code> anyway).  As you can see, there is not that much to it: Just trigger a blank error, execute the code, check to see if a new error was triggered.</p>
+
+<p>I am using this in some Integration Tests I am writing for Lex for testing templates and such.  I add a little more "magic" to add the correct line number in the test file that the error occured.  This is possible because in the above code <code>$error['line']</code> is equal to the line number of the evaluated code in which the error occured.</p>
+
+<h3>Haters Gonna Hate</h3>
+
+<p>I know I am going to get hate for this article, but that is OK.  Most of you are probably going to hate just because you have heard the "Eval is Evil" line your entire career, so you have been brainwashed into thinking a certain way.  Don't hate on something just because it has a bad rep (<code>goto</code> anyone?).</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Anonymous Functions vs. Closures]]></title>

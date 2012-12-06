@@ -5,11 +5,11 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>Lex Parser 2.0 - dh.blog</title>
+  <title>Simple Syntax Highlighting for Tumblr - dh.blog</title>
   <meta name="author" content="Dan Horrigan">
 
   
-  <meta name="description" content="After 4 months of no progress or changes to the Lex Parser, I decided it was time for a face lift. Although there aren’t many new features in 2.0, &hellip;">
+  <meta name="description" content="I was looking to add syntax highlighting to my blog here, and figured I would use the ever-handy (and simple) Google Code Prettifier, It ended up &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -18,7 +18,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://dhorrigan.github.com/blog/2012/08/09/lex-parser-2-dot-0/">
+  <link rel="canonical" href="http://dhorrigan.github.com/blog/2012/08/17/simple-syntax-highlighting-for-tumblr/">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <script src="/javascripts/modernizr-2.0.js"></script>
@@ -67,7 +67,7 @@
   
   <header>
     
-      <h1 class="entry-title">Lex Parser 2.0</h1>
+      <h1 class="entry-title">Simple Syntax Highlighting for Tumblr</h1>
     
     
       <p class="meta">
@@ -83,29 +83,66 @@
   
 
 
-<time datetime="2012-08-09T00:00:00-04:00" pubdate data-updated="true">Aug 9<span>th</span>, 2012</time>
+<time datetime="2012-08-17T00:00:00-04:00" pubdate data-updated="true">Aug 17<span>th</span>, 2012</time>
         
       </p>
     
   </header>
 
 
-<div class="entry-content"><p>After 4 months of no progress or changes to the Lex Parser, I decided it was time for a face lift.  Although there aren’t many new features in 2.0, the things that have changed are big.</p>
+<div class="entry-content"><p>I was looking to add syntax highlighting to my blog here, and figured I would use the ever-handy (and simple) <a href="http://code.google.com/p/google-code-prettify/">Google Code Prettifier</a>,</p>
 
-<h4>Changelog</h4>
+<p>It ended up being really simple, and I added a bit of JavaScript so I don&#8217;t have to manually write the <code>&lt;pre&gt;</code> tags and add the <code>prettyprint</code> class to code blocks.  This is helpful when you are writing your posts in Markdown.</p>
 
-<ul>
-<li>PHP version requirement has been upped to 5.3</li>
-<li>All code is now PSR-0, 1 and 2 compliant. (See here for more information on the standards.)</li>
-<li>Lex is now a Composer Package (under the name fuel/lex).</li>
-<li>The Lex GitHub repository has been moved under the fuelphp organization.</li>
-<li>New  and  conditional tags have been added.</li>
-</ul>
+<p>Two simple steps:</p>
+
+<ol>
+<li>Either upload the <code>prettify.css</code> and the <code>prettify.js</code> files to Tumblr and link to them, or you can link to them directly in their repository:</li>
+</ol>
 
 
-<p>To learn how to install and use Lex using Composer, read the README.</p>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='html'><span class='line'><span class="nt">&lt;link</span> <span class="na">rel=</span><span class="s">&quot;stylesheet&quot;</span> <span class="na">type=</span><span class="s">&quot;text/css&quot;</span> <span class="na">href=</span><span class="s">&quot;http://google-code-prettify.googlecode.com/svn/trunk/src/prettify.css&quot;</span> <span class="nt">/&gt;</span>
+</span><span class='line'><span class="nt">&lt;script </span><span class="na">src=</span><span class="s">&quot;http://google-code-prettify.googlecode.com/svn/trunk/src/prettify.js&quot;</span><span class="nt">&gt;&lt;/script&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
 
-<p>As I stated in the changelog, the repository has been moved under the PyroCMS organization on GitHub.  The URL is <a href="">https://github.com/pyrocms/lex</a>.  This was done to centralize the code, as well as give it a broader audience to help come up with new features and spot bugs faster.</p>
+
+<ol>
+<li>Insert the following code somewhere in your theme:</li>
+</ol>
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+</pre></td><td class='code'><pre><code class='html'><span class='line'><span class="nt">&lt;script </span><span class="na">type=</span><span class="s">&quot;text/javascript&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>    <span class="nx">$</span><span class="p">(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>        <span class="kd">var</span> <span class="nx">run</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>
+</span><span class='line'>        <span class="nx">$</span><span class="p">(</span><span class="s2">&quot;pre code&quot;</span><span class="p">).</span><span class="nx">parent</span><span class="p">().</span><span class="nx">each</span><span class="p">(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>            <span class="nx">run</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
+</span><span class='line'>            <span class="nx">$</span><span class="p">(</span><span class="k">this</span><span class="p">).</span><span class="nx">addClass</span><span class="p">(</span><span class="s1">&#39;prettyprint&#39;</span><span class="p">);</span>
+</span><span class='line'>        <span class="p">});</span>
+</span><span class='line'>        <span class="k">if</span> <span class="p">(</span><span class="nx">run</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>            <span class="nx">prettyPrint</span><span class="p">();</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>    <span class="p">});</span>
+</span><span class='line'><span class="nt">&lt;/script&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p><em>Note: Make sure you put the stylesheet link above your Theme&#8217;s CSS.</em></p>
+
+<p><em>Note 2: This assumes you have jQuery already loaded.</em></p>
 </div>
 
 
@@ -128,12 +165,12 @@
   
 
 
-<time datetime="2012-08-09T00:00:00-04:00" pubdate data-updated="true">Aug 9<span>th</span>, 2012</time>
+<time datetime="2012-08-17T00:00:00-04:00" pubdate data-updated="true">Aug 17<span>th</span>, 2012</time>
       
 
 <span class="categories">
   
-    <a class='category' href='/blog/categories/lex/'>Lex</a>, <a class='category' href='/blog/categories/libraries/'>Libraries</a>, <a class='category' href='/blog/categories/php/'>PHP</a>
+    <a class='category' href='/blog/categories/js/'>JS</a>
   
 </span>
 
@@ -142,7 +179,7 @@
     
       <div class="sharing">
   
-  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://dhorrigan.github.com/blog/2012/08/09/lex-parser-2-dot-0/" data-via="dhorrigan" data-counturl="http://dhorrigan.github.com/blog/2012/08/09/lex-parser-2-dot-0/" >Tweet</a>
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://dhorrigan.github.com/blog/2012/08/17/simple-syntax-highlighting-for-tumblr/" data-via="dhorrigan" data-counturl="http://dhorrigan.github.com/blog/2012/08/17/simple-syntax-highlighting-for-tumblr/" >Tweet</a>
   
   
   
@@ -151,8 +188,10 @@
     
     <p class="meta">
       
+        <a class="basic-alignment left" href="/blog/2012/08/11/anonymous-functions-vs-closures/" title="Previous Post: Anonymous Functions vs. Closures">&laquo; Anonymous Functions vs. Closures</a>
       
-        <a class="basic-alignment right" href="/blog/2012/08/11/anonymous-functions-vs-closures/" title="Next Post: Anonymous Functions vs. Closures">Anonymous Functions vs. Closures &raquo;</a>
+      
+        <a class="basic-alignment right" href="/blog/2012/08/28/is-eval-really-evil-yes-dot-dot-dot-and-no/" title="Next Post: Is Eval Really Evil? Yes...and No.">Is Eval Really Evil? Yes...and No. &raquo;</a>
       
     </p>
   </footer>
@@ -264,8 +303,8 @@
       
         
         // var disqus_developer = 1;
-        var disqus_identifier = 'http://dhorrigan.github.com/blog/2012/08/09/lex-parser-2-dot-0/';
-        var disqus_url = 'http://dhorrigan.github.com/blog/2012/08/09/lex-parser-2-dot-0/';
+        var disqus_identifier = 'http://dhorrigan.github.com/blog/2012/08/17/simple-syntax-highlighting-for-tumblr/';
+        var disqus_url = 'http://dhorrigan.github.com/blog/2012/08/17/simple-syntax-highlighting-for-tumblr/';
         var disqus_script = 'embed.js';
       
     (function () {

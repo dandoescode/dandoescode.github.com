@@ -9,7 +9,7 @@
   <meta name="author" content="Dan Horrigan">
 
   
-  <meta name="description" content="Ever wonder what the difference between an Anonymous Function and a Closure is? What about a Lambda? How are they implemented in PHP? There seems to &hellip;">
+  <meta name="description" content="Many of you will have already known this was coming eventually. For the past 8 months or so I have been contributing to FuelPHP less and less (in- &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -64,6 +64,269 @@
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2012/10/25/it-was-fun/">It Was Fun.</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-10-25T00:00:00-04:00" pubdate data-updated="true">Oct 25<span>th</span>, 2012</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>Many of you will have already known this was coming eventually.  For the past 8 months or so I have been contributing to FuelPHP less and less (in-fact nothing anytime recently).  Today, I am officially stepping away from the project.</p>
+
+<p>Harro (<a href="http://twitter.com/WanWizard">@WanWizard</a>) is, and has been, the project lead. I have full confidence in his abilities to take the project further than I ever could.  I will be transfering everything (domain name, DNS, hosting accounts, etc) over to him over the next few days, so no worries about any of that.</p>
+
+<p>This decision has nothing to do with the framework itself. I still believe it is, and will be, a great solution for a lot of people.</p>
+
+<p>It was fun while it lasted, I just have to move on.</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2012/08/28/is-eval-really-evil-yes-dot-dot-dot-and-no/">Is Eval Really Evil? Yes&#8230; And No.</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-08-28T00:00:00-04:00" pubdate data-updated="true">Aug 28<span>th</span>, 2012</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>How many times have you been told &#8220;Eval is Evil&#8221;?  Probably a lot, and for good reason.  The <code>eval()</code> function in PHP is dangerous in most situations.  Why?  Because executing arbitrary code can lead to very bad things.  Let&#8217;s look at a real world example that I have seen used in the wild (not going to say which app&#8230;for reasons you will see).</p>
+
+<p>The offending code looked something like this (class/variable names have been changed):</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='php'><span class='line'><span class="cp">&lt;?php</span>
+</span><span class='line'><span class="nv">$method</span> <span class="o">=</span> <span class="nv">$_GET</span><span class="p">[</span><span class="s1">&#39;method&#39;</span><span class="p">];</span>
+</span><span class='line'><span class="k">eval</span><span class="p">(</span><span class="s1">&#39;$return = Foo::&#39;</span><span class="o">.</span><span class="nv">$method</span><span class="o">.</span><span class="s1">&#39;();&#39;</span><span class="p">);</span>
+</span><span class='line'><span class="cp">?&gt;</span><span class="x"></span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p><em>If you look at that code and say &#8220;What is wrong with that?&#8221;, then you may need to re-evaluate your career path, or read on and learn.</em></p>
+
+<p>The above code was used to be able to call various methods (obviously).  However, this is the worst possibly way to do this.  It is very easy to exploit.  All the user needs to do is find a valid method, then they can execute almost any code they want (let&#8217;s assume this was in index.php):</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='php'><span class='line'><span class="x">index.php?method=bar()%3B%24r%3Dmysql_query(%22select%20*%20from%20users%22)%3Bwhile(%24row%3Dmysql_fetch_assoc(%24r))var_dump(%24row)%3Bdie()%3B%2F%2F</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>If you decode that you will see that method is set to:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='php'><span class='line'><span class="x">bar();$r=mysql_query(&quot;select * from users&quot;);while($row=mysql_fetch_assoc($r))var_dump($row);die();//</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>So when the original code is executed it will run the following:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='php'><span class='line'><span class="cp">&lt;?php</span>
+</span><span class='line'><span class="k">eval</span><span class="p">(</span><span class="s1">&#39;$return = Foo::bar();$r=mysql_query(&quot;select * from users&quot;);while($row=mysql_fetch_assoc($r))var_dump($row);die();//();&#39;</span><span class="p">);</span>
+</span><span class='line'><span class="cp">?&gt;</span><span class="x"></span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>So, this will (assuming that <code>mysql_connect()</code> has been called and a DB selected) basically dump the entire <code>users</code> table to that user.  I hope you can see why THAT is bad.</p>
+
+<p>This is probably enough to turn you away from using it at all&#8230;which isn&#8217;t a bad thing.  However, this is where I will get hate, there are times where you have no other option to use <code>eval()</code>, or the other options are equally as bad.</p>
+
+<h3>Wait, I can use eval()?</h3>
+
+<p>Well&#8230;sometimes, and only if you are very, VERY, careful.  One of the only valid reasons I can think of to use <code>eval()</code> is Integration Tests.</p>
+
+<p>The main reason that it is OK to use it when writing Integration Tests is because you control everything.  You control the code being executed, and the environment in which it is executed.  The tests deal with no end user data, so you don&#8217;t need to worry (unless you have some evil devs on your team) about arbitrary code execution.</p>
+
+<p>A great example of this use is reading in tests from external files.  These files can contain various data besides the code to execute to run the tests.  So you read in the file, get the code that needs to be run and run it through <code>eval()</code> (you could also write the code out to a temp file, then <code>include</code> it, but it poses the same security risks, and adds unneeded load to the filesystem).</p>
+
+<h3>Ok, so only in tests?</h3>
+
+<p>Knowing when to use <code>eval()</code> is very simple.  Ask yourself &#8220;Will this code run in production with user input?&#8221; If your answer is yes, then NO, you should not use <code>eval()</code>&#8230;ever (unless you REALLY know what you are doing and are REALLY sure the code being executed is safe).</p>
+
+<h3>Catching Syntax Errors in Eval</h3>
+
+<p>Since errors triggered in code ran inside <code>eval()</code> will not be caught by your error handler (set via <code>set_error_handler()</code>), you need to implement some trickery to catch PHP errors.  This can be handy when you are using <code>eval()</code> to execute some test code.</p>
+
+<p>Here is the full code sample for catching the errors:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+</pre></td><td class='code'><pre><code class='php'><span class='line'><span class="cp">&lt;?php</span>
+</span><span class='line'><span class="c1">// We need to make sure we don&#39;t have any previous errors munging our results</span>
+</span><span class='line'><span class="o">@</span><span class="nb">trigger_error</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">);</span>
+</span><span class='line'><span class="k">eval</span><span class="p">(</span><span class="nv">$code</span><span class="p">);</span>
+</span><span class='line'><span class="nv">$error</span> <span class="o">=</span> <span class="nb">error_get_last</span><span class="p">();</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// If the message is empty, then we know it is from our error triggered above</span>
+</span><span class='line'><span class="k">if</span> <span class="p">(</span><span class="nv">$error</span><span class="p">[</span><span class="s1">&#39;message&#39;</span><span class="p">]</span> <span class="o">!==</span> <span class="s1">&#39;&#39;</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="c1">// Do whatever you want with the error...here we throw an ErrorException</span>
+</span><span class='line'>    <span class="k">throw</span> <span class="k">new</span> <span class="nx">ErrorException</span><span class="p">(</span><span class="nv">$error</span><span class="p">[</span><span class="s1">&#39;message&#39;</span><span class="p">],</span> <span class="nv">$error</span><span class="p">[</span><span class="s1">&#39;type&#39;</span><span class="p">]);</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'><span class="cp">?&gt;</span><span class="x"></span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Ok, before you start hating on the code above, it is meant only for use during testing, so using the <code>@</code> operator isn&#8217;t a big deal (c&#8217;mon, we are using <code>eval()</code> anyway).  As you can see, there is not that much to it: Just trigger a blank error, execute the code, check to see if a new error was triggered.</p>
+
+<p>I am using this in some Integration Tests I am writing for Lex for testing templates and such.  I add a little more &#8220;magic&#8221; to add the correct line number in the test file that the error occured.  This is possible because in the above code <code>$error['line']</code> is equal to the line number of the evaluated code in which the error occured.</p>
+
+<h3>Haters Gonna Hate</h3>
+
+<p>I know I am going to get hate for this article, but that is OK.  Most of you are probably going to hate just because you have heard the &#8220;Eval is Evil&#8221; line your entire career, so you have been brainwashed into thinking a certain way.  Don&#8217;t hate on something just because it has a bad rep (<code>goto</code> anyone?).</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2012/08/17/simple-syntax-highlighting-for-tumblr/">Simple Syntax Highlighting for Tumblr</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-08-17T00:00:00-04:00" pubdate data-updated="true">Aug 17<span>th</span>, 2012</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>I was looking to add syntax highlighting to my blog here, and figured I would use the ever-handy (and simple) <a href="http://code.google.com/p/google-code-prettify/">Google Code Prettifier</a>,</p>
+
+<p>It ended up being really simple, and I added a bit of JavaScript so I don&#8217;t have to manually write the <code>&lt;pre&gt;</code> tags and add the <code>prettyprint</code> class to code blocks.  This is helpful when you are writing your posts in Markdown.</p>
+
+<p>Two simple steps:</p>
+
+<ol>
+<li>Either upload the <code>prettify.css</code> and the <code>prettify.js</code> files to Tumblr and link to them, or you can link to them directly in their repository:</li>
+</ol>
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='html'><span class='line'><span class="nt">&lt;link</span> <span class="na">rel=</span><span class="s">&quot;stylesheet&quot;</span> <span class="na">type=</span><span class="s">&quot;text/css&quot;</span> <span class="na">href=</span><span class="s">&quot;http://google-code-prettify.googlecode.com/svn/trunk/src/prettify.css&quot;</span> <span class="nt">/&gt;</span>
+</span><span class='line'><span class="nt">&lt;script </span><span class="na">src=</span><span class="s">&quot;http://google-code-prettify.googlecode.com/svn/trunk/src/prettify.js&quot;</span><span class="nt">&gt;&lt;/script&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<ol>
+<li>Insert the following code somewhere in your theme:</li>
+</ol>
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+</pre></td><td class='code'><pre><code class='html'><span class='line'><span class="nt">&lt;script </span><span class="na">type=</span><span class="s">&quot;text/javascript&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>    <span class="nx">$</span><span class="p">(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>        <span class="kd">var</span> <span class="nx">run</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>
+</span><span class='line'>        <span class="nx">$</span><span class="p">(</span><span class="s2">&quot;pre code&quot;</span><span class="p">).</span><span class="nx">parent</span><span class="p">().</span><span class="nx">each</span><span class="p">(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>            <span class="nx">run</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
+</span><span class='line'>            <span class="nx">$</span><span class="p">(</span><span class="k">this</span><span class="p">).</span><span class="nx">addClass</span><span class="p">(</span><span class="s1">&#39;prettyprint&#39;</span><span class="p">);</span>
+</span><span class='line'>        <span class="p">});</span>
+</span><span class='line'>        <span class="k">if</span> <span class="p">(</span><span class="nx">run</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>            <span class="nx">prettyPrint</span><span class="p">();</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>    <span class="p">});</span>
+</span><span class='line'><span class="nt">&lt;/script&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p><em>Note: Make sure you put the stylesheet link above your Theme&#8217;s CSS.</em></p>
+
+<p><em>Note 2: This assumes you have jQuery already loaded.</em></p>
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -367,6 +630,18 @@
     <section>
   <h1>Recent Posts</h1>
   <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2012/10/25/it-was-fun/">It was fun.</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/08/28/is-eval-really-evil-yes-dot-dot-dot-and-no/">Is Eval Really Evil? Yes&#8230;and No.</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/08/17/simple-syntax-highlighting-for-tumblr/">Simple Syntax Highlighting for Tumblr</a>
+      </li>
     
       <li class="post">
         <a href="/blog/2012/08/11/anonymous-functions-vs-closures/">Anonymous Functions vs. Closures</a>

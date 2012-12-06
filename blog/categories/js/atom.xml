@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: JS | dh.blog]]></title>
+  <link href="http://dhorrigan.github.com/blog/categories/js/atom.xml" rel="self"/>
+  <link href="http://dhorrigan.github.com/"/>
+  <updated>2012-12-06T13:38:57-05:00</updated>
+  <id>http://dhorrigan.github.com/</id>
+  <author>
+    <name><![CDATA[Dan Horrigan]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Simple Syntax Highlighting for Tumblr]]></title>
+    <link href="http://dhorrigan.github.com/blog/2012/08/17/simple-syntax-highlighting-for-tumblr/"/>
+    <updated>2012-08-17T00:00:00-04:00</updated>
+    <id>http://dhorrigan.github.com/blog/2012/08/17/simple-syntax-highlighting-for-tumblr</id>
+    <content type="html"><![CDATA[<p>I was looking to add syntax highlighting to my blog here, and figured I would use the ever-handy (and simple) <a href="http://code.google.com/p/google-code-prettify/">Google Code Prettifier</a>,</p>
+
+<p>It ended up being really simple, and I added a bit of JavaScript so I don't have to manually write the <code>&lt;pre&gt;</code> tags and add the <code>prettyprint</code> class to code blocks.  This is helpful when you are writing your posts in Markdown.</p>
+
+<p>Two simple steps:</p>
+
+<ol>
+<li>Either upload the <code>prettify.css</code> and the <code>prettify.js</code> files to Tumblr and link to them, or you can link to them directly in their repository:</li>
+</ol>
+
+
+<p>``` html</p>
+
+<pre><code>&lt;link rel="stylesheet" type="text/css" href="http://google-code-prettify.googlecode.com/svn/trunk/src/prettify.css" /&gt;
+&lt;script src="http://google-code-prettify.googlecode.com/svn/trunk/src/prettify.js"&gt;&lt;/script&gt;
+</code></pre>
+
+<p>```</p>
+
+<ol>
+<li>Insert the following code somewhere in your theme:</li>
+</ol>
+
+
+<p>``` html</p>
+
+<pre><code>&lt;script type="text/javascript"&gt;
+    $(function() {
+        var run = false;
+        $("pre code").parent().each(function() {
+            run = true;
+            $(this).addClass('prettyprint');
+        });
+        if (run) {
+            prettyPrint();
+        }
+    });
+&lt;/script&gt;
+</code></pre>
+
+<p>```</p>
+
+<p><em>Note: Make sure you put the stylesheet link above your Theme's CSS.</em></p>
+
+<p><em>Note 2: This assumes you have jQuery already loaded.</em></p>
+]]></content>
+  </entry>
+  
+</feed>
