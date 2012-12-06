@@ -2,12 +2,12 @@
 #      Main Configs       #
 # ----------------------- #
 
-url: http://dhorrigan.github.com
-title: dh.blog
+url: http://blog.dhorrigan.com
+title: Dan Horrigan
 subtitle: "Rants, Code, and Everything Else"
 author: Dan Horrigan
 simple_search: http://google.com/search
-description:
+description: 
 
 # Default date format is "ordinal" (resulting in "July 22nd 2007")
 # You can customize the format as defined in
