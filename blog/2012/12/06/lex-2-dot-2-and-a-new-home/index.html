@@ -3,11 +3,11 @@
 <html>
 <head>
 	<meta charset="utf-8">
-	<title>Blog Archives - Dan Horrigan</title>
+	<title>Lex 2.2 and a New Home - Dan Horrigan</title>
 	<meta name="author" content="Dan Horrigan">
 
 	
-	<meta name="description" content="2012 Dec 6 Lex, PHP Lex 2.2 and a New Home Oct 25 It was fun. Aug 28 PHP Is Eval Really Evil? Yes&#8230;and No. Aug 17 JS Simple Syntax Highlighting &hellip;">
+	<meta name="description" content="Lex 2.2 has just been released. Not much has changed, but a Minor version bump was required due to a backwards-incompatibility issue. Changelog Fixed &hellip;">
 	
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
@@ -65,120 +65,51 @@
 				
 			
 			<div class="mid-col-container">
-				<div id="content" class="inner">
-	
+				<div id="content" class="inner"><article class="post">
+	<h1 class="title">Lex 2.2 and a New Home</h1>
+	<div class="entry-content"><p>Lex 2.2 has just been released.  Not much has changed, but a Minor version bump was required due to a backwards-incompatibility issue.</p>
+
+<h4>Changelog</h4>
+
+<ul>
+<li>Fixed a test which was PHP 5.4 only.</li>
+<li>Added PHPUnit as a composer dev requirement.</li>
+<li>Added a Lex\ParsingException class which is thrown when a parsing exception occurs.</li>
+</ul>
 
 
-	
-	
-	<section class="archives"><h1 class="year">2012</h1>
+<p>The 3rd point is the one that caused the version bump.  Before it would simply dump a message and then <code>exit()</code> (that was stupid).</p>
 
-<article>
-	<div class="meta">
-		<span class="date">Dec  6</span>
-		<br>
-		<span class="tags">
+<h3>New Home</h3>
 
+<p>Lex has been moved from the Fuel GitHub organization to the PyroCMS organization (<a href="">https://github.com/pyrocms/lex</a>).  This was done because it was originally built for PyroCMS and it will be maintained by myself and the Pyro team.</p>
 
-	<a class='category' href='/blog/categories/lex/'>Lex</a>, <a class='category' href='/blog/categories/php/'>PHP</a>
+<p>With this change I have also re-named the Composer package to <code>pyrocms/lex</code>, so please update your composer.json files. If you try using the old one, it should tell you that it is replaced by the new one and to update your requirement.</p>
 
+<p>As always if you run into issues go ahead and let me know via the Issue Tracker.</p>
+</div>
 
-</span>
-	    
-	</div>
-	<h1 class="title"><a href="/blog/2012/12/06/lex-2-dot-2-and-a-new-home/">Lex 2.2 and a New Home</a></h1>
 </article>
 
+	<div class="share">
+	<div class="addthis_toolbox addthis_default_style ">
 	
-
-
-<article>
-	<div class="meta">
-		<span class="date">Oct 25</span>
-		<br>
-		<span class="tags">
-
-</span>
-	    
-	</div>
-	<h1 class="title"><a href="/blog/2012/10/25/it-was-fun/">It was fun.</a></h1>
-</article>
-
 	
-
-
-<article>
-	<div class="meta">
-		<span class="date">Aug 28</span>
-		<br>
-		<span class="tags">
-
-
-	<a class='category' href='/blog/categories/php/'>PHP</a>
-
-
-</span>
-	    
-	</div>
-	<h1 class="title"><a href="/blog/2012/08/28/is-eval-really-evil-yes-dot-dot-dot-and-no/">Is Eval Really Evil? Yes&#8230;and No.</a></h1>
-</article>
-
+	<a class="addthis_button_tweet"></a>
 	
-
-
-<article>
-	<div class="meta">
-		<span class="date">Aug 17</span>
-		<br>
-		<span class="tags">
-
-
-	<a class='category' href='/blog/categories/js/'>JS</a>
-
-
-</span>
-	    
-	</div>
-	<h1 class="title"><a href="/blog/2012/08/17/simple-syntax-highlighting-for-tumblr/">Simple Syntax Highlighting for Tumblr</a></h1>
-</article>
-
 	
-
-
-<article>
-	<div class="meta">
-		<span class="date">Aug 11</span>
-		<br>
-		<span class="tags">
-
-
-	<a class='category' href='/blog/categories/php/'>PHP</a>
-
-
-</span>
-	    
+	<a class="addthis_counter addthis_pill_style"></a>
 	</div>
-	<h1 class="title"><a href="/blog/2012/08/11/anonymous-functions-vs-closures/">Anonymous Functions vs. Closures</a></h1>
-</article>
-
-	
+  <script type="text/javascript" src="http://s7.addthis.com/js/250/addthis_widget.js#pubid="></script>
+</div>
 
 
-<article>
-	<div class="meta">
-		<span class="date">Aug  9</span>
-		<br>
-		<span class="tags">
 
-
-	<a class='category' href='/blog/categories/lex/'>Lex</a>, <a class='category' href='/blog/categories/libraries/'>Libraries</a>, <a class='category' href='/blog/categories/php/'>PHP</a>
-
-
-</span>
-	    
-	</div>
-	<h1 class="title"><a href="/blog/2012/08/09/lex-parser-2-dot-0/">Lex Parser 2.0</a></h1>
-</article>
+<section id="comment">
+    <h1 class="title">Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+</section>
 </div>
 			</div>
 			<footer id="footer" class="inner">Copyright &copy; 2012
@@ -200,7 +131,10 @@ Design credit: <a href="http://shashankmehta.in/archive/2012/greyshade.html">Sha
       var disqus_shortname = 'danhorrigan';
       
         
-        var disqus_script = 'count.js';
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://blog.dhorrigan.com/blog/2012/12/06/lex-2-dot-2-and-a-new-home/';
+        var disqus_url = 'http://blog.dhorrigan.com/blog/2012/12/06/lex-2-dot-2-and-a-new-home/';
+        var disqus_script = 'embed.js';
       
     (function () {
       var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
