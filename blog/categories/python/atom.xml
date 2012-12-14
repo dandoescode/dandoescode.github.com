@@ -1,0 +1,333 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: Python | Dan Horrigan]]></title>
+  <link href="http://blog.dhorrigan.com/blog/categories/python/atom.xml" rel="self"/>
+  <link href="http://blog.dhorrigan.com/"/>
+  <updated>2012-12-13T21:04:31-05:00</updated>
+  <id>http://blog.dhorrigan.com/</id>
+  <author>
+    <name><![CDATA[Dan Horrigan]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Workers and Image Processing]]></title>
+    <link href="http://blog.dhorrigan.com/blog/2012/12/13/workers-and-image-processing/"/>
+    <updated>2012-12-13T20:24:00-05:00</updated>
+    <id>http://blog.dhorrigan.com/blog/2012/12/13/workers-and-image-processing</id>
+    <content type="html"><![CDATA[<h2>A Litte Background</h2>
+
+<p>In my second week of working at <a href="http://kaptu.re">Kapture</a>, I was tasked with moving our image processing over to a worker process to help speed up the process.  It wasn't THAT slow, but we noticed certain scenarios which caused Kaptures to take longer than they should.  We boiled it down to (mainly) the image processing.</p>
+
+<p>So here is the basic flow of the way Kaptures USED to work so you can understand what is going on:</p>
+
+<ol>
+<li>The user takes a photo, enters the info and it starts to upload the photo via an API request, then waits for a response from the server.</li>
+<li>The API resizes it to the proper size.</li>
+<li>Inserts the photo into the Merchant's Polaroid frame.</li>
+<li>Makes a thumbnail.</li>
+<li>Uploads the resulting image and thumbnail to S3.</li>
+<li>Enter the new Kapture info into the database.</li>
+<li>Send Response</li>
+<li>User continues with Redemption</li>
+</ol>
+
+
+<p>As you can see, there is a lot going on there.  This really isn't bad most of the time, but sometimes it can get bogged down with the image resizing (if the server is under load), or S3 can be going a bit slow.</p>
+
+<p>So, what to do?  It is simple, offload it to a background process, right?  Well, yes, that would work, however, that still adds load to the API server and slows down other requests.  Our solution was to offload it to a worker process on a different server.  We already had a workers server, so it was no big deal for us (not going into setting up the Queue and such).</p>
+
+<h2>Which Language?</h2>
+
+<p>We could write the worker in any language we wanted, so which did we choose?  Python.</p>
+
+<p>We did this for two main reasons:</p>
+
+<ul>
+<li>Python is better than PHP for long running processes.</li>
+<li>Python has the awesome PIL library for image manipulation.</li>
+</ul>
+
+
+<p>Now that we have that sorted, let's figure out how we want things to work.</p>
+
+<h2>What Should the End Result Be?</h2>
+
+<p>It is always a good idea to plan things out before you just go Cowboy Coding.  Here is what we came up with:</p>
+
+<ol>
+<li>The user takes a photo, enters the info and the app sends the API the photo and other data, and waits for a response.</li>
+<li>Enter the new Kapture into the database.</li>
+<li>Send the photo (and some metadata) off to the Queue.</li>
+<li>Send Response</li>
+<li>User continues with Redemption</li>
+</ol>
+
+
+<p>We took 3 huge steps out of the process.  Now it is time to code.</p>
+
+<h2>Making it Work</h2>
+
+<h3>Get it to the Queue</h3>
+
+<p>The first thing to figure out is how to send the user's photo over to the worker.  We use RabbitMQ for our Queue server, so we could just send the raw image data in the message we send the Queue.  However, once you start to get into creating clusters of Queue servers, this will cause slow downs, and in some cases will cause some nodes in the cluster to incorrectly be taken out due to heartbeat timeouts (it is an Erlang thing).</p>
+
+<p>We decided to shove the raw image data into our Redis server, then just send the Key along with our other data in the message.  This is done fairly simply:</p>
+
+<p>``` php
+&lt;?php
+$redis = new Predis\Client(array(</p>
+
+<pre><code>'host' =&gt; Config::get('redis.host'),
+'port' =&gt; Config::get('redis.port'),
+'database' =&gt; 4
+</code></pre>
+
+<p>));</p>
+
+<p>$redis->set('photo:'.$image_name, file_get_contents($image_file));
+```</p>
+
+<p><em>Note: <code>$image_name</code> is guaranteed to be unique, so no chance of collisions here.</em></p>
+
+<p>What's next?  Yup, we need to send the message to the Queue server so the worker can, well, get to work.</p>
+
+<p>``` php
+&lt;?php
+Rabbit::enque('image_proc', 'polaroid', [</p>
+
+<pre><code>// Some other data you can't see :P
+'image_name'    =&gt; $image_name,
+</code></pre>
+
+<p>]);
+```</p>
+
+<p><code>Rabbit::enque</code> is a class and method we have written to make sending stuff to our Queue easy.  There are plenty of tutorials and code around to show you how to do this, so I won't bore you with that.  Just know that the first parameter is the Exchange name, and the second is the Queue name.</p>
+
+<h3>The Worker</h3>
+
+<p>For the worker, like I said earlier, we are using Python.  The libraries we are using are as follows:</p>
+
+<ul>
+<li>kombu - The AMQP Library</li>
+<li>boto - S3 Stuff</li>
+<li>PIL - Image Library</li>
+<li>redis - Redis Library</li>
+<li>requests - To make Requests to the API</li>
+</ul>
+
+
+<p>I am not going to post our exact code (obviously), but here is the basic setup we have to subscribe to the Queue.  This is a little more complicated than it needs to be because we will be adding more workers.</p>
+
+<h4>runner.py</h4>
+
+<p>``` python
+from kombu import Connection
+from kombu.utils.debug import setup_logging
+from workers import PolaroidWorker</p>
+
+<p>setup_logging(loglevel='INFO')</p>
+
+<h1>Here is where we get our configuration and do a few other things</h1>
+
+<h1>Create the connection to the Queue server.</h1>
+
+<h1>We use a with statement here so the connection is auto-closed</h1>
+
+<p>with Connection(hostname=config['host'],</p>
+
+<pre><code>            port=config['port'],
+            userid=config['user'],
+            password=config['pass'],
+            virtual_host=config['vhost']) as conn:
+try:
+    PolaroidWorker(conn, config).run()
+except KeyboardInterrupt:
+    print('Exiting')
+</code></pre>
+
+<p>```</p>
+
+<p>I have omitted the getting of our config for security purposes, but just know it is a JSON file that we grab and parse.</p>
+
+<p>This file is pretty simple, it just makes a Connection to the Queue server, then creates a new PolaroidWorker (more below), and runs it.</p>
+
+<h4>queues.py</h4>
+
+<p>``` python
+from kombu import Exchange, Queue</p>
+
+<p>task_exchange = Exchange('image_proc', type='direct')
+queues = {</p>
+
+<pre><code>'polaroid': Queue('polaroid', task_exchange)
+</code></pre>
+
+<p>}
+```</p>
+
+<p>This file defines our Exchange and then a Dictionary of Queues.  These are used later in our Workers.</p>
+
+<h4>workers.py</h4>
+
+<p>``` python
+from kombu.mixins import ConsumerMixin
+from kombu.log import get_logger
+from queues import queues</p>
+
+<h1>S3 Stuff</h1>
+
+<p>from boto.s3.connection import S3Connection
+from boto.s3.key import Key</p>
+
+<h1>Everything else we need</h1>
+
+<p>import Image, cStringIO, os, redis, urllib</p>
+
+<p>logger = get_logger(<strong>name</strong>)</p>
+
+<p>class BaseWorker(ConsumerMixin):</p>
+
+<pre><code># The name of the queue that this worker consumes (see queues.py)
+worker_queue = None
+
+def __init__(self, connection, config):
+    print "Worker Init"
+    self.connection = connection
+    self.config = config
+
+def get_consumers(self, Consumer, channel):
+    return [Consumer(queues=queues[self.worker_queue],
+                     callbacks=[self.process])]
+</code></pre>
+
+<p>class PolaroidWorker(BaseWorker):</p>
+
+<pre><code>worker_queue = 'polaroid'
+
+def process(self, body, message):
+    try:
+        # This is where you process the message from the Queue
+    except Exception, e:
+        print "[%s] Processing Raised Exception: %s" % (body['id'], exc)
+    # Acknowledge the message to the Queue
+    message.ack()
+</code></pre>
+
+<p>```</p>
+
+<p>So, things get a bit more complicated here.  <code>BaseWorker</code> extends the <code>ConsumerMixin</code> which is provided by kombu to handle all of the "scaffolding" type things.  <code>get_consumers</code> is called automatically when the worker starts up (part of the <code>ConsumerMixin</code> class).  It returns an array of Consumers that will handle messages that this workers is supposed to consume.  As you can see we send it the Queue we defined in the <code>queues</code> Dictionary we defined in <code>queues.py</code>, then set the callback to be the <code>process</code> method of the worker class.</p>
+
+<p>Next, we define the worker where we actually get things done.  All it defines is which <code>worker_queue</code> it is responsible for, then defines the <code>process</code> method.  We put all the processing in a try/catch so that we can continue on, and just dump out the exception if there is one.  Finally we acknowledge the message so that we don't re-process it.</p>
+
+<h2>The Image Processing</h2>
+
+<p>There is a lot thet goes into this, and I can't show you all of the code, but here is a little tid-bit.</p>
+
+<p>``` python
+orig_tmp_file = '/tmp/orig_' + body['image_name'] + '.png'
+tmp_file = '/tmp/' + body['image_name'] + '.png'</p>
+
+<h1>Open the Redis connection</h1>
+
+<p>r = redis.StrictRedis(host=self.config['redis-host'], port=self.config['redis-port'], db=4)</p>
+
+<h1>Gets then Deletes the photo from Redis</h1>
+
+<p>raw_photo = r.get('photo:' + body['image_name'])
+r.delete('photo:' + body['image_name'])</p>
+
+<h1>Create a string buffer then open it as an image</h1>
+
+<h1>Note: cStringIO is much faster than StringIO, hence the usage</h1>
+
+<p>photo = Image.open(cStringIO.StringIO(raw_photo))</p>
+
+<h1>Save the original so we can upload it later</h1>
+
+<p>photo.save(orig_tmp_file)</p>
+
+<h1>Open the Polaroid Frame image, load it into PIL then close it.</h1>
+
+<p>f = urllib.urlopen(polaroid_url)
+frame = Image.open(cStringIO.StringIO(f.read()))
+f.close()</p>
+
+<h1>Resize the image, and add the User Photo to the frame</h1>
+
+<h1>all in one go, then save it to the temp file</h1>
+
+<p>frame.paste(photo.resize((586, 497)), (13, 13))
+frame.save(tmp_file)</p>
+
+<h1>Get the images up to S3</h1>
+
+<p>framed_url = self.upload_image(s3_path_would_go_here, tmp_file)
+image_url = self.upload_image(other_s3_path_would_go_here, orig_tmp_file)</p>
+
+<h1>This is where we would send an API Request with all the info it needs to</h1>
+
+<h1>update the records and such.</h1>
+
+<h1>Close the Redis connection, we don't want to leave open connections</h1>
+
+<p>r.connection_pool.disconnect()</p>
+
+<h1>Delete the temp files</h1>
+
+<p>os.unlink(tmp_file)
+os.unlink(orig_tmp_file)</p>
+
+<h1>Some other stuff to free up memory and such that I won't bore you with</h1>
+
+<p>```</p>
+
+<p><strong>Note: Some of the variable names and other stuff has been changed.</strong></p>
+
+<p>It looks like a lot of code, but if you take out the comments, it isn't bad.</p>
+
+<h2>Uploading to S3</h2>
+
+<p>In the above code we call <code>self.upload_image</code>, so here it is:</p>
+
+<p>``` python
+def upload_image(self, key_path, file_path):</p>
+
+<pre><code>"""Uploads the given image to S3 at the given key Path."""
+
+# Connect to S3 if we haven't already
+if self.s3 == None:
+    self.s3 = S3Connection(self.config['aws']['key'], self.config['aws']['secret'])
+
+# Get the S3 bucket
+bucket = self.s3.get_bucket(self.config['aws']['s3_bucket'])
+
+# Determine the Key (object) Path and create it
+k = Key(bucket, key_path)
+
+# Get a file pointer to the temp file then send it to S3
+image = open(file_path)
+k.set_contents_from_file(image)
+image.close()
+
+# Make the image public
+k.make_public()
+
+return url #We build the URL here, but I can't show you that.
+</code></pre>
+
+<p>```</p>
+
+<p>Pretty simple right?</p>
+
+<h2>Did it Work?</h2>
+
+<p>Yes! Very well.</p>
+]]></content>
+  </entry>
+  
+</feed>
