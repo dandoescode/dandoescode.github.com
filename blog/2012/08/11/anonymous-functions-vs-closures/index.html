@@ -17,36 +17,46 @@
 	<link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
 	<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
 	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
-	<link href='http://fonts.googleapis.com/css?family=Open+Sans:400italic,400,700' rel='stylesheet' type='text/css'>
 	
 </head>
 
 <body>
-	<div class="container">
-		<div class="left-col">
-			<div class="intrude-less">
-			<header id="header" class="inner"><div class="profilepic">	
-	<img src="/images/dh.png" alt="Profile Picture" style="width: 160px;">
-</div>
-<h1><a href="/">Dan Horrigan</a></h1>
-<p class="subtitle">Rants, Code, and Everything Else</p>
+	<header id="header" class="inner"><h1><a href="/">Dan Horrigan</a></h1>
 <nav id="main-nav"><ul class="main">
 	<li><a href="/">Blog</a></li>
 	<li><a href="/blog/archives">Archives</a></li>
 </ul>
-<section class="aboutme">
-    <p>I am a Senior Engineer at <a href="http://kaptu.re">Kapture</a>.  I write PHP, Python, Ruby or whatever is necessary to get the job done.  I love Open Source, and anything to do with the web, and beer.</p>
-</section>
 </nav>
-<nav id="sub-nav">
+<nav id="mobile-nav">
+	<div class="alignleft menu">
+		<a class="button">Menu</a>
+		<div class="container"><ul class="main">
+	<li><a href="/">Blog</a></li>
+	<li><a href="/blog/archives">Archives</a></li>
+</ul>
+</div>
+	</div>
+	<div class="alignright search">
+		<a class="button"></a>
+		<div class="container">
+			<form action="http://google.com/search" method="get">
+				<input type="text" name="q" results="0">
+				<input type="hidden" name="q" value="site:dandoescode.com">
+			</form>
+		</div>
+	</div>
+</nav>
+<nav id="sub-nav" class="alignright">
 	<div class="social">
 		
 		
 		
-		<a class="twitter" href="http://twitter.com/dhorrigan" title="Twitter">Twitter</a>
+		<a class="twitter" href="http://twitter.com/DanDoesCode" title="Twitter">Twitter</a>
 		
 		
 		<a class="github" href="https://github.com/dhorrigan" title="GitHub">GitHub</a>
+		
+    
 		
 		
 		
@@ -55,18 +65,18 @@
 		<a class="rss" href="/atom.xml" title="RSS">RSS</a>
 		
 	</div>
+	<form class="search" action="http://google.com/search" method="get">
+		<input class="alignright" type="text" name="q" results="0">
+		<input type="hidden" name="q" value="site:dandoescode.com">
+	</form>
 </nav>
 
-</header>				
-			</div>
-		</div>	
-		<div class="mid-col">
-			
-				
-			
-			<div class="mid-col-container">
-				<div id="content" class="inner"><article class="post">
-	<h1 class="title">Anonymous Functions vs. Closures</h1>
+</header>
+	
+		
+	
+	<div id="content" class="inner"><article class="post">
+	<h2 class="title">Anonymous Functions vs. Closures</h2>
 	<div class="entry-content"><p>Ever wonder what the difference between an Anonymous Function and a Closure is?  What about a Lambda?  How are they implemented in PHP?  There seems to be a lot of confusion in this area, with people interchanging the words, and not really knowing what they mean, so lets dive in and answer these questions.</p>
 
 <p>First things first: A &#8220;Lambda&#8221; is just another name for an Anonymous Function.  You may have seen it used in some programming language (e.g. Python) and not known what it was&#8230;now you do.</p>
@@ -274,7 +284,30 @@
 <p>Hope that helped clear up the confusion.  Feel free to leave questions in the comments, or I am always available on <a href="http://twitter.com/dhorrigan">Twitter</a>.</p>
 </div>
 
-</article>
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-08-11T00:00:00-04:00" pubdate data-updated="true">Aug 11<span>th</span>, 2012</time></div>
+	<div class="tags">
+
+
+	<a class='category' href='/blog/categories/php/'>PHP</a>
+
+
+</div>
+	
+</div></article>
 
 	<div class="share">
 	<div class="addthis_toolbox addthis_default_style ">
@@ -291,19 +324,17 @@
 
 
 <section id="comment">
-    <h1 class="title">Comments</h1>
+    <h2 class="title">Comments</h2>
     <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
 </div>
 </section>
 </div>
-			</div>
-			<footer id="footer" class="inner">Copyright &copy; 2012
+	<footer id="footer" class="inner">Copyright &copy; 2012
 
     Dan Horrigan
 
-
-Design credit: <a href="http://shashankmehta.in/archive/2012/greyshade.html">Shashank Mehta</a></footer>
-			<script src="/javascripts/slash.js"></script>
+</footer>
+	<script src="/javascripts/slash.js"></script>
 <script src="/javascripts/jquery.fancybox.pack.js"></script>
 <script type="text/javascript">
 (function($){
@@ -317,8 +348,8 @@ Design credit: <a href="http://shashankmehta.in/archive/2012/greyshade.html">Sha
       
         
         // var disqus_developer = 1;
-        var disqus_identifier = 'http://blog.dhorrigan.com/blog/2012/08/11/anonymous-functions-vs-closures/';
-        var disqus_url = 'http://blog.dhorrigan.com/blog/2012/08/11/anonymous-functions-vs-closures/';
+        var disqus_identifier = 'http://dandoescode.com/blog/2012/08/11/anonymous-functions-vs-closures/';
+        var disqus_url = 'http://dandoescode.com/blog/2012/08/11/anonymous-functions-vs-closures/';
         var disqus_script = 'embed.js';
       
     (function () {
@@ -332,7 +363,5 @@ Design credit: <a href="http://shashankmehta.in/archive/2012/greyshade.html">Sha
 
 
 
-		</div>
-	</div>
 </body>
 </html>

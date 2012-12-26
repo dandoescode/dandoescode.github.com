@@ -17,36 +17,46 @@
 	<link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
 	<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
 	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
-	<link href='http://fonts.googleapis.com/css?family=Open+Sans:400italic,400,700' rel='stylesheet' type='text/css'>
 	
 </head>
 
 <body>
-	<div class="container">
-		<div class="left-col">
-			<div class="intrude-less">
-			<header id="header" class="inner"><div class="profilepic">	
-	<img src="/images/dh.png" alt="Profile Picture" style="width: 160px;">
-</div>
-<h1><a href="/">Dan Horrigan</a></h1>
-<p class="subtitle">Rants, Code, and Everything Else</p>
+	<header id="header" class="inner"><h1><a href="/">Dan Horrigan</a></h1>
 <nav id="main-nav"><ul class="main">
 	<li><a href="/">Blog</a></li>
 	<li><a href="/blog/archives">Archives</a></li>
 </ul>
-<section class="aboutme">
-    <p>I am a Senior Engineer at <a href="http://kaptu.re">Kapture</a>.  I write PHP, Python, Ruby or whatever is necessary to get the job done.  I love Open Source, and anything to do with the web, and beer.</p>
-</section>
 </nav>
-<nav id="sub-nav">
+<nav id="mobile-nav">
+	<div class="alignleft menu">
+		<a class="button">Menu</a>
+		<div class="container"><ul class="main">
+	<li><a href="/">Blog</a></li>
+	<li><a href="/blog/archives">Archives</a></li>
+</ul>
+</div>
+	</div>
+	<div class="alignright search">
+		<a class="button"></a>
+		<div class="container">
+			<form action="http://google.com/search" method="get">
+				<input type="text" name="q" results="0">
+				<input type="hidden" name="q" value="site:dandoescode.com">
+			</form>
+		</div>
+	</div>
+</nav>
+<nav id="sub-nav" class="alignright">
 	<div class="social">
 		
 		
 		
-		<a class="twitter" href="http://twitter.com/dhorrigan" title="Twitter">Twitter</a>
+		<a class="twitter" href="http://twitter.com/DanDoesCode" title="Twitter">Twitter</a>
 		
 		
 		<a class="github" href="https://github.com/dhorrigan" title="GitHub">GitHub</a>
+		
+    
 		
 		
 		
@@ -55,18 +65,18 @@
 		<a class="rss" href="/atom.xml" title="RSS">RSS</a>
 		
 	</div>
+	<form class="search" action="http://google.com/search" method="get">
+		<input class="alignright" type="text" name="q" results="0">
+		<input type="hidden" name="q" value="site:dandoescode.com">
+	</form>
 </nav>
 
-</header>				
-			</div>
-		</div>	
-		<div class="mid-col">
-			
-				
-			
-			<div class="mid-col-container">
-				<div id="content" class="inner"><article class="post">
-	<h1 class="title">Lex Parser 2.0</h1>
+</header>
+	
+		
+	
+	<div id="content" class="inner"><article class="post">
+	<h2 class="title">Lex Parser 2.0</h2>
 	<div class="entry-content"><p>After 4 months of no progress or changes to the Lex Parser, I decided it was time for a face lift.  Although there aren’t many new features in 2.0, the things that have changed are big.</p>
 
 <h4>Changelog</h4>
@@ -85,7 +95,30 @@
 <p>As I stated in the changelog, the repository has been moved under the PyroCMS organization on GitHub.  The URL is <a href="">https://github.com/pyrocms/lex</a>.  This was done to centralize the code, as well as give it a broader audience to help come up with new features and spot bugs faster.</p>
 </div>
 
-</article>
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-08-09T00:00:00-04:00" pubdate data-updated="true">Aug 9<span>th</span>, 2012</time></div>
+	<div class="tags">
+
+
+	<a class='category' href='/blog/categories/lex/'>Lex</a>, <a class='category' href='/blog/categories/libraries/'>Libraries</a>, <a class='category' href='/blog/categories/php/'>PHP</a>
+
+
+</div>
+	
+</div></article>
 
 	<div class="share">
 	<div class="addthis_toolbox addthis_default_style ">
@@ -102,19 +135,17 @@
 
 
 <section id="comment">
-    <h1 class="title">Comments</h1>
+    <h2 class="title">Comments</h2>
     <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
 </div>
 </section>
 </div>
-			</div>
-			<footer id="footer" class="inner">Copyright &copy; 2012
+	<footer id="footer" class="inner">Copyright &copy; 2012
 
     Dan Horrigan
 
-
-Design credit: <a href="http://shashankmehta.in/archive/2012/greyshade.html">Shashank Mehta</a></footer>
-			<script src="/javascripts/slash.js"></script>
+</footer>
+	<script src="/javascripts/slash.js"></script>
 <script src="/javascripts/jquery.fancybox.pack.js"></script>
 <script type="text/javascript">
 (function($){
@@ -128,8 +159,8 @@ Design credit: <a href="http://shashankmehta.in/archive/2012/greyshade.html">Sha
       
         
         // var disqus_developer = 1;
-        var disqus_identifier = 'http://blog.dhorrigan.com/blog/2012/08/09/lex-parser-2-dot-0/';
-        var disqus_url = 'http://blog.dhorrigan.com/blog/2012/08/09/lex-parser-2-dot-0/';
+        var disqus_identifier = 'http://dandoescode.com/blog/2012/08/09/lex-parser-2-dot-0/';
+        var disqus_url = 'http://dandoescode.com/blog/2012/08/09/lex-parser-2-dot-0/';
         var disqus_script = 'embed.js';
       
     (function () {
@@ -143,7 +174,5 @@ Design credit: <a href="http://shashankmehta.in/archive/2012/greyshade.html">Sha
 
 
 
-		</div>
-	</div>
 </body>
 </html>

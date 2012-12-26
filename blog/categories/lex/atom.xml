@@ -2,10 +2,10 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
 
   <title><![CDATA[Category: Lex | Dan Horrigan]]></title>
-  <link href="http://blog.dhorrigan.com/blog/categories/lex/atom.xml" rel="self"/>
-  <link href="http://blog.dhorrigan.com/"/>
-  <updated>2012-12-26T16:56:38-05:00</updated>
-  <id>http://blog.dhorrigan.com/</id>
+  <link href="http://dandoescode.com/blog/categories/lex/atom.xml" rel="self"/>
+  <link href="http://dandoescode.com/"/>
+  <updated>2012-12-26T17:09:34-05:00</updated>
+  <id>http://dandoescode.com/</id>
   <author>
     <name><![CDATA[Dan Horrigan]]></name>
     
@@ -15,9 +15,9 @@
   
   <entry>
     <title type="html"><![CDATA[Lex 2.2 and a New Home]]></title>
-    <link href="http://blog.dhorrigan.com/blog/2012/12/06/lex-2-dot-2-and-a-new-home/"/>
+    <link href="http://dandoescode.com/blog/2012/12/06/lex-2-dot-2-and-a-new-home/"/>
     <updated>2012-12-06T14:21:00-05:00</updated>
-    <id>http://blog.dhorrigan.com/blog/2012/12/06/lex-2-dot-2-and-a-new-home</id>
+    <id>http://dandoescode.com/blog/2012/12/06/lex-2-dot-2-and-a-new-home</id>
     <content type="html"><![CDATA[<p>Lex 2.2 has just been released.  Not much has changed, but a Minor version bump was required due to a backwards-incompatibility issue.</p>
 
 <h4>Changelog</h4>
@@ -43,9 +43,9 @@
   
   <entry>
     <title type="html"><![CDATA[Lex Parser 2.0]]></title>
-    <link href="http://blog.dhorrigan.com/blog/2012/08/09/lex-parser-2-dot-0/"/>
+    <link href="http://dandoescode.com/blog/2012/08/09/lex-parser-2-dot-0/"/>
     <updated>2012-08-09T00:00:00-04:00</updated>
-    <id>http://blog.dhorrigan.com/blog/2012/08/09/lex-parser-2-dot-0</id>
+    <id>http://dandoescode.com/blog/2012/08/09/lex-parser-2-dot-0</id>
     <content type="html"><![CDATA[<p>After 4 months of no progress or changes to the Lex Parser, I decided it was time for a face lift.  Although there aren’t many new features in 2.0, the things that have changed are big.</p>
 
 <h4>Changelog</h4>
