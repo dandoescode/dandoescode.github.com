@@ -4,7 +4,7 @@
   <title><![CDATA[Dan Horrigan]]></title>
   <link href="http://dandoescode.com/atom.xml" rel="self"/>
   <link href="http://dandoescode.com/"/>
-  <updated>2013-01-11T17:35:50-05:00</updated>
+  <updated>2013-01-11T17:39:02-05:00</updated>
   <id>http://dandoescode.com/</id>
   <author>
     <name><![CDATA[Dan Horrigan]]></name>
@@ -55,6 +55,12 @@
 
 
 <p>You can use this concept any time your Callback Tag does not require any content.</p>
+
+<h3>Getting It</h3>
+
+<p>Update your Composer requirement to <code>2.3.*</code>.</p>
+
+<p><a href="https://github.com/pyrocms/lex">View on GitHub</a></p>
 ]]></content>
   </entry>
   
