@@ -4,7 +4,7 @@
   <title><![CDATA[Dan Horrigan]]></title>
   <link href="http://dandoescode.com/atom.xml" rel="self"/>
   <link href="http://dandoescode.com/"/>
-  <updated>2012-12-26T19:09:54-05:00</updated>
+  <updated>2013-01-11T17:35:50-05:00</updated>
   <id>http://dandoescode.com/</id>
   <author>
     <name><![CDATA[Dan Horrigan]]></name>
@@ -12,6 +12,51 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Lex 2.3]]></title>
+    <link href="http://dandoescode.com/blog/2013/01/11/lex-2-dot-3/"/>
+    <updated>2013-01-11T17:17:00-05:00</updated>
+    <id>http://dandoescode.com/blog/2013/01/11/lex-2-dot-3</id>
+    <content type="html"><![CDATA[<p>Lex 2.3 has just been released.  This is the third version released today, two bug fixes and this minor release.  This version changes the behaviour of Callback Tags slightly.</p>
+
+<p>In 2.2 I attempted to make Callback Tags less greedy&#8230;this failed, miserably.  It caused all sorts of unforeseen issues.  So, I have rolled back those changes (for the most part).</p>
+
+<p>Callback Tags are now greedy on purpose.  As I explain in the README: &#8220;If a Callback Tag can be used in single or block form, then when using it in it&#8217;s singular form, it must be closed (just like HTML)&#8221;.  This is exactly how HTML works.  Consider you want to insert an empty paragraph, you can&#8217;t just do <code>&lt;p&gt;</code>, that would cause massive issues on the page.  So instead you do <code>&lt;p&gt;&lt;/p&gt;</code>.  Same concept in Lex now.</p>
+
+<p>Now, I know this could get unwieldy very quickly.  Take this contrived example:</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>{{ foo.bar.baz }}{{ /foo.bar.baz }}
+</span><span class='line'>
+</span><span class='line'>{{ foo.bar.baz }}
+</span><span class='line'>    Content
+</span><span class='line'>{{ /foo.bar.baz }}</span></code></pre></td></tr></table></div></figure>
+
+
+<p>It isn&#8217;t too bad, but it is ugly and feels gross, and will get worse over time.  But, have no fear, I have added the concept of Self Closing Callback Tags into 2.3.</p>
+
+<p>This means you can self-close a Lex Callback Tag exactly as you would an HTML tag (e.g. <code>&lt;p /&gt;</code>).  So, our above example could be rewritten as follows:</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>{{ foo.bar.baz /}}
+</span><span class='line'>
+</span><span class='line'>{{ foo.bar.baz }}
+</span><span class='line'>    Content
+</span><span class='line'>{{ /foo.bar.baz }}</span></code></pre></td></tr></table></div></figure>
+
+
+<p>You can use this concept any time your Callback Tag does not require any content.</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[A New Me in 2013]]></title>
