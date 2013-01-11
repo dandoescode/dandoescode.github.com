@@ -1,0 +1,37 @@
+---
+layout: post
+title: "Lex 2.3"
+date: 2013-01-11 17:17
+comments: true
+categories: [Lex, PHP]
+---
+
+Lex 2.3 has just been released.  This is the third version released today, two bug fixes and this minor release.  This version changes the behaviour of Callback Tags slightly.
+
+In 2.2 I attempted to make Callback Tags less greedy...this failed, miserably.  It caused all sorts of unforeseen issues.  So, I have rolled back those changes (for the most part).
+
+Callback Tags are now greedy on purpose.  As I explain in the README: "If a Callback Tag can be used in single or block form, then when using it in it's singular form, it must be closed (just like HTML)".  This is exactly how HTML works.  Consider you want to insert an empty paragraph, you can't just do `<p>`, that would cause massive issues on the page.  So instead you do `<p></p>`.  Same concept in Lex now.
+
+Now, I know this could get unwieldy very quickly.  Take this contrived example:
+
+{% codeblock %}{% raw %}
+{{ foo.bar.baz }}{{ /foo.bar.baz }}
+
+{{ foo.bar.baz }}
+    Content
+{{ /foo.bar.baz }}
+{% endraw %}{% endcodeblock %}
+
+It isn't too bad, but it is ugly and feels gross, and will get worse over time.  But, have no fear, I have added the concept of Self Closing Callback Tags into 2.3.
+
+This means you can self-close a Lex Callback Tag exactly as you would an HTML tag (e.g. `<p />`).  So, our above example could be rewritten as follows:
+
+{% codeblock %}{% raw %}
+{{ foo.bar.baz /}}
+
+{{ foo.bar.baz }}
+    Content
+{{ /foo.bar.baz }}
+{% endraw %}{% endcodeblock %}
+
+You can use this concept any time your Callback Tag does not require any content.
