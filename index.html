@@ -96,7 +96,7 @@
 
 <p>So the Mutators are simply methods on your Model that you can define to modify the value of a field either before it is returned to you, or prior to being set.  These methods are called automatically when you access or set the field as a property on the model (e.g. <code>$user-&gt;settings</code>).</p>
 
-<p>Let&#8217;s take that <code>settings</code> for example. For this we will assume that <code>settings</code> is a field that holds a JSON encoded array of settings. Here is a basic User model with using Mutators to parse the permissions:</p>
+<p>Let&#8217;s take that <code>settings</code> for example. For this we will assume that <code>settings</code> is a field that holds a JSON encoded array of settings. Here is a basic User model with using Mutators to parse the settings:</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
