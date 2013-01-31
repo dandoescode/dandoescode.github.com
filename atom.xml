@@ -4,7 +4,7 @@
   <title><![CDATA[Dan Horrigan]]></title>
   <link href="http://dandoescode.com/atom.xml" rel="self"/>
   <link href="http://dandoescode.com/"/>
-  <updated>2013-01-31T02:36:41-05:00</updated>
+  <updated>2013-01-31T02:40:37-05:00</updated>
   <id>http://dandoescode.com/</id>
   <author>
     <name><![CDATA[Dan Horrigan]]></name>
@@ -18,7 +18,7 @@
     <link href="http://dandoescode.com/blog/2013/01/31/laravel-mutators-dot-dot-dot-the-name-doesnt-matter/"/>
     <updated>2013-01-31T01:45:00-05:00</updated>
     <id>http://dandoescode.com/blog/2013/01/31/laravel-mutators-dot-dot-dot-the-name-doesnt-matter</id>
-    <content type="html"><![CDATA[<p>There was a change to the <a href="http://four.laravel.com">Laravel 4</a> Eloquent Mutators recently that some people did not like.  The thing that changed was the prefix for the Mutator methods.  So, instead of naming them <code>getFoo</code> and/or <code>setFoo</code> you name then <code>giveFoo</code> and <code>takeFoo</code>.  Some people seemed to think that this would impact how they actually used their Models, which it does not.  It actually makes it easier for you to write them.</p>
+    <content type="html"><![CDATA[<p>There was a change to the <a href="http://four.laravel.com">Laravel 4</a> Eloquent Mutators recently that some people do not like.  The thing that changed was the prefix for the Mutator methods.  So, instead of naming them <code>getFoo</code> and/or <code>setFoo</code> you name them <code>giveFoo</code> and <code>takeFoo</code>.  Some people seemed to think that this would impact how they actually used their Models, which it does not.  It actually makes it easier for you to write them.</p>
 
 <h2>What is an Eloquent Mutator?</h2>
 
