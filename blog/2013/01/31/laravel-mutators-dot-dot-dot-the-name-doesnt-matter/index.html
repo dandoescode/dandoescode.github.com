@@ -1,0 +1,262 @@
+
+<!DOCTYPE HTML>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>Laravel 4 Mutators...The Name Doesn't Matter - Dan Horrigan</title>
+	<meta name="author" content="Dan Horrigan">
+
+	
+	<meta name="description" content="There was a change to the Laravel 4 Eloquent Mutators recently that some people did not like. The thing that changed was the prefix for the Mutator &hellip;">
+	
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+	<link href="/atom.xml" rel="alternate" title="Dan Horrigan" type="application/atom+xml">
+	<link rel="canonical" href="">
+	<link href="/favicon.png" rel="shortcut icon">
+	<link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+	<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+	
+</head>
+
+<body>
+	<header id="header" class="inner"><h1><a href="/">Dan Horrigan</a></h1>
+<nav id="main-nav"><ul class="main">
+	<li><a href="/">Blog</a></li>
+	<li><a href="/blog/archives">Archives</a></li>
+</ul>
+</nav>
+<nav id="mobile-nav">
+	<div class="alignleft menu">
+		<a class="button">Menu</a>
+		<div class="container"><ul class="main">
+	<li><a href="/">Blog</a></li>
+	<li><a href="/blog/archives">Archives</a></li>
+</ul>
+</div>
+	</div>
+	<div class="alignright search">
+		<a class="button"></a>
+		<div class="container">
+			<form action="http://google.com/search" method="get">
+				<input type="text" name="q" results="0">
+				<input type="hidden" name="q" value="site:dandoescode.com">
+			</form>
+		</div>
+	</div>
+</nav>
+<nav id="sub-nav" class="alignright">
+	<div class="social">
+		
+		<a class="facebook" href="http://www.facebook.com/1046055329" title="Facebook">Facebook</a>
+		
+		
+		
+		<a class="twitter" href="http://twitter.com/DanDoesCode" title="Twitter">Twitter</a>
+		
+		
+		<a class="github" href="https://github.com/DanDoesCode" title="GitHub">GitHub</a>
+		
+    
+		
+		<a class="coderwall" href="https://coderwall.com/dhorrigan" title="Coderwall">Coderwall</a>
+		
+		
+		
+		
+		
+		<a class="rss" href="/atom.xml" title="RSS">RSS</a>
+		
+	</div>
+	<form class="search" action="http://google.com/search" method="get">
+		<input class="alignright" type="text" name="q" results="0">
+		<input type="hidden" name="q" value="site:dandoescode.com">
+	</form>
+</nav>
+
+</header>
+	
+		
+	
+	<div id="content" class="inner"><article class="post">
+	<h2 class="title">Laravel 4 Mutators...The Name Doesn't Matter</h2>
+	<div class="entry-content"><p>There was a change to the <a href="http://four.laravel.com">Laravel 4</a> Eloquent Mutators recently that some people did not like.  The thing that changed was the prefix for the Mutator methods.  So, instead of naming them <code>getFoo</code> and/or <code>setFoo</code> you name then <code>giveFoo</code> and <code>takeFoo</code>.  Some people seemed to think that this would impact how they actually used their Models, which it does not.  It actually makes it easier for you to write them.</p>
+
+<h2>What is an Eloquent Mutator?</h2>
+
+<p>So the Mutators are simply methods on your Model that you can define to modify the value of a field either before it is returned to you, or prior to being set.  These methods are called automatically when you access or set the field as a property on the model (e.g. <code>$user-&gt;settings</code>).</p>
+
+<p>Let&#8217;s take that <code>settings</code> for example. For this we will assume that <code>settings</code> is a field that holds a JSON encoded array of settings. Here is a basic User model with using Mutators to parse the permissions:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+</pre></td><td class='code'><pre><code class='php'><span class='line'><span class="cp">&lt;?php</span>
+</span><span class='line'><span class="k">class</span> <span class="nc">User</span> <span class="k">extends</span> <span class="nx">Illuminate\Database\Eloquent\Model</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="k">protected</span> <span class="k">function</span> <span class="nf">giveSettings</span><span class="p">(</span><span class="nv">$settings</span><span class="p">)</span>
+</span><span class='line'>    <span class="p">{</span>
+</span><span class='line'>        <span class="k">return</span> <span class="nb">json_decode</span><span class="p">(</span><span class="nv">$settings</span><span class="p">);</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">protected</span> <span class="k">function</span> <span class="nf">takeSettings</span><span class="p">(</span><span class="nv">$settings</span><span class="p">)</span>
+</span><span class='line'>    <span class="p">{</span>
+</span><span class='line'>        <span class="k">return</span> <span class="nb">json_encode</span><span class="p">(</span><span class="nv">$settings</span><span class="p">);</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Notice one important thing here, both methods are <code>protected</code>.  This is because these methods should never be called from outside the scope of the Model. This is not required, but it is a good habit to get into.  Now to access the permissions you just do <code>$user-&gt;settings</code>.</p>
+
+<h2>Why not &#8216;get&#8217; and &#8216;set&#8217;?</h2>
+
+<p>There are multiple reasons:</p>
+
+<ol>
+<li>Naming conflicts with the Eloquent core.  There are methods such as <code>getTable</code> defined, which meant that you could never have a field named <code>table</code>, or it would fall over (well, return incorrect data in this simple case).</li>
+<li>You should be able to create your own <code>getFoo</code> and <code>setFoo</code> methods without having to worry about conflicting with anything (including future fields) or having to worry about the method prototype matching what Eloquent wants.</li>
+</ol>
+
+
+<p>Number 1 could be fixed by just changing the Model methods to stop using the <code>getFoo</code> scheme, but that would cause people just as much &#8220;frustration&#8221;, if not more than changing the mutator naming.</p>
+
+<p>Number 2 is the bigger issue.</p>
+
+<h3>Real World Example</h3>
+
+<p>Going to use one of the examples that <a href="http://twitter.com/ben_corlett">@ben_corlett</a> used, as it makes a lot of sense.</p>
+
+<p>So, to make things nice and DI friendly (there are other reasons to do it as well), you can use Interfaces.  So let&#8217;s define a simple one for a User.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='php'><span class='line'><span class="cp">&lt;?php</span>
+</span><span class='line'><span class="k">interface</span> <span class="nx">UserInterface</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="k">public</span> <span class="k">function</span> <span class="nf">getName</span><span class="p">();</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>So here would be most people&#8217;s (including my own) first attempt at implementing the interface:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class='php'><span class='line'><span class="cp">&lt;?php</span>
+</span><span class='line'><span class="k">class</span> <span class="nc">User</span> <span class="k">extends</span> <span class="nx">Illuminate\Database\Eloquent\Model</span> <span class="k">implements</span> <span class="nx">UserInterface</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="k">public</span> <span class="k">function</span> <span class="nf">getName</span><span class="p">()</span>
+</span><span class='line'>    <span class="p">{</span>
+</span><span class='line'>        <span class="k">return</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">name</span><span class="p">;</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>With the old mutator naming, this would be a mutator and cause an infinite loop. With the new naming, this is no longer a mutator and works as expected.</p>
+
+<h3>Conclusion</h3>
+
+<p>Are <code>give</code> and <code>take</code> the best prefixes? No. Are they horrible? No. Method naming is not a &#8220;one size fits all&#8221; type thing, some people will like them, and some people will hate them. This is one of those changes that everyone gets up in arms about, and then in a few days, your code will be changed and</p>
+
+<p>Here is a little anecdote that pertains to this: When I was creating FuelPHP, I changed all the <code>factory</code> methods in the entire framework to <code>forge</code>, and everyone freaked out.  A week later, everyone got used to it and went back to writing code.</p>
+</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-01-31T01:45:00-05:00" pubdate data-updated="true">Jan 31<span>st</span>, 2013</time></div>
+	<div class="tags">
+
+</div>
+	
+</div></article>
+
+	<div class="share">
+	<div class="addthis_toolbox addthis_default_style ">
+	
+	
+	<a class="addthis_button_tweet"></a>
+	
+	
+	<a class="addthis_counter addthis_pill_style"></a>
+	</div>
+  <script type="text/javascript" src="http://s7.addthis.com/js/250/addthis_widget.js#pubid="></script>
+</div>
+
+
+
+<section id="comment">
+    <h2 class="title">Comments</h2>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+</section>
+</div>
+	<footer id="footer" class="inner">Copyright &copy; 2013
+
+    Dan Horrigan
+
+</footer>
+	<script src="/javascripts/slash.js"></script>
+<script src="/javascripts/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+(function($){
+	$('.fancybox').fancybox();
+})(jQuery);
+</script> <!-- Delete or comment this line to disable Fancybox -->
+
+
+<script type="text/javascript">
+      var disqus_shortname = 'danhorrigan';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://dandoescode.com/blog/2013/01/31/laravel-mutators-dot-dot-dot-the-name-doesnt-matter/';
+        var disqus_url = 'http://dandoescode.com/blog/2013/01/31/laravel-mutators-dot-dot-dot-the-name-doesnt-matter/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+
+
+</body>
+</html>
