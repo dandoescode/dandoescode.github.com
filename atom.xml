@@ -4,7 +4,7 @@
   <title><![CDATA[Dan Horrigan]]></title>
   <link href="http://dandoescode.com/atom.xml" rel="self"/>
   <link href="http://dandoescode.com/"/>
-  <updated>2013-01-31T02:42:06-05:00</updated>
+  <updated>2013-01-31T02:43:00-05:00</updated>
   <id>http://dandoescode.com/</id>
   <author>
     <name><![CDATA[Dan Horrigan]]></name>
@@ -55,7 +55,7 @@
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>Notice one important thing here, both methods are <code>protected</code>.  This is because these methods should never be called from outside the scope of the Model. This is not required, but it is a good habit to get into.  Now to access the permissions you just do <code>$user-&gt;settings</code>.</p>
+<p>Notice one important thing here, both methods are <code>protected</code>.  This is because these methods should never be called from outside the scope of the Model. This is not required, but it is a good habit to get into.  Now to access the settings you just do <code>$user-&gt;settings</code>.</p>
 
 <h2>Why not &#8216;get&#8217; and &#8216;set&#8217;?</h2>
 
