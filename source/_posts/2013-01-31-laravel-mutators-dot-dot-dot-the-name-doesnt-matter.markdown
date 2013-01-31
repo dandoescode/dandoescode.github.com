@@ -6,7 +6,7 @@ comments: true
 categories:
 ---
 
-There was a change to the [Laravel 4](http://four.laravel.com) Eloquent Mutators recently that some people did not like.  The thing that changed was the prefix for the Mutator methods.  So, instead of naming them `getFoo` and/or `setFoo` you name then `giveFoo` and `takeFoo`.  Some people seemed to think that this would impact how they actually used their Models, which it does not.  It actually makes it easier for you to write them.
+There was a change to the [Laravel 4](http://four.laravel.com) Eloquent Mutators recently that some people do not like.  The thing that changed was the prefix for the Mutator methods.  So, instead of naming them `getFoo` and/or `setFoo` you name them `giveFoo` and `takeFoo`.  Some people seemed to think that this would impact how they actually used their Models, which it does not.  It actually makes it easier for you to write them.
 
 ## What is an Eloquent Mutator?
 
